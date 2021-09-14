@@ -42,7 +42,7 @@ export default function RegisterView() {
 
       <form onSubmit={handleSubmit} style={styles.form} autoComplete="off">
         <label style={styles.label}>
-          email
+          Email
           <input
             type="email"
             name="email"

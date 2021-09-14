@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { lazy, Suspense } from 'react';
-import { NavLink, Route, Switch, Redirect } from 'react-router-dom';
+import { NavLink, Switch } from 'react-router-dom';
 import authSelectors from '../redux/auth/authSelectors';
 import { userLogOut, userRefresh } from '../redux/auth/authOperations';
+import PrivateRoute from './PrivateRoute/PrivateRoute';
+import PublicRoute from './PublicRoute/PublicRoute';
 
 const HomeView = lazy(() =>
   import('../views/HomeView' /* webpackChunkName: "home-page" */),
@@ -30,62 +32,64 @@ function App() {
 
   return (
     <>
-      <nav className="container navContainer ">
-        <NavLink exact to="/" className="link" activeClassName="activeLink">
-          Phonebook
-        </NavLink>
-        {!isLoggedIn && !isRefresh && (
-          <div>
-            <NavLink
-              to="/register"
-              className="link"
-              activeClassName="activeLink"
-            >
-              SignUp
+      {isRefresh ? (
+        <h1>Loading...</h1>
+      ) : (
+        <>
+          <nav className="container navContainer ">
+            <NavLink exact to="/" className="link" activeClassName="activeLink">
+              Phonebook
             </NavLink>
-            <NavLink to="/login" className="link" activeClassName="activeLink">
-              LogIn
-            </NavLink>
-          </div>
-        )}
-        {isLoggedIn && !isRefresh && (
-          <div>
-            <span className="navText">Welcome, {name}</span>
-            <button
-              className="button"
-              type="button"
-              onClick={() => dispatch(userLogOut())}
-            >
-              LogOut
-            </button>
-          </div>
-        )}
-      </nav>
 
-      <Suspense fallback={<div>Loading...</div>}>
-        {!isRefresh && isLoggedIn && (
+            {!isLoggedIn ? (
+              <div>
+                <NavLink
+                  to="/register"
+                  className="link"
+                  activeClassName="activeLink"
+                >
+                  SignUp
+                </NavLink>
+                <NavLink
+                  to="/login"
+                  className="link"
+                  activeClassName="activeLink"
+                >
+                  LogIn
+                </NavLink>
+              </div>
+            ) : (
+              <div>
+                <span className="navText">Welcome, {name}</span>
+                <button
+                  className="button"
+                  type="button"
+                  onClick={() => dispatch(userLogOut())}
+                >
+                  LogOut
+                </button>
+              </div>
+            )}
+          </nav>
+
           <Switch>
-            <Route path="/contacts">
-              <ContactsView />
-            </Route>
-            <Redirect to="/contacts" />
+            <Suspense fallback={<div>Loading...</div>}>
+              <PublicRoute exact path="/">
+                <HomeView />
+              </PublicRoute>
+              <PublicRoute exact path="/register">
+                <RegisterView />
+              </PublicRoute>
+              <PublicRoute exact path="/login">
+                <LoginView />
+              </PublicRoute>
+              <PrivateRoute path="/contacts" redirectTo="/">
+                <ContactsView />
+              </PrivateRoute>
+            </Suspense>
           </Switch>
-        )}
-        {!isRefresh && !isLoggedIn && (
-          <Switch>
-            <Route exact path="/">
-              <HomeView />
-            </Route>
-            <Route path="/register">
-              <RegisterView />
-            </Route>
-            <Route path="/login">
-              <LoginView />
-            </Route>
-            <Redirect to="/" />
-          </Switch>
-        )}
-      </Suspense>
+        </>
+      )}
     </>
   );
 }

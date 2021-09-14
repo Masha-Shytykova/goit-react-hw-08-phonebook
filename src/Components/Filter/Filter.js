@@ -11,6 +11,7 @@ const Filter = () => {
       <label>
         Find contacts by name
         <input
+          className="inputFilter"
           type="text"
           name="filter"
           value={value}

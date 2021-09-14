@@ -1,0 +1,2 @@
+(this["webpackJsonpgoit-react-hw-02-phonebook"]=this["webpackJsonpgoit-react-hw-02-phonebook"]||[]).push([[1],{85:function(e,o,t){"use strict";t.r(o);var c=t(1);o.default=function(){return Object(c.jsxs)("div",{className:"container",children:[Object(c.jsx)("h1",{children:"Welcome!"}),Object(c.jsx)("h3",{children:"You should SignUp or LogIn to use the App"})]})}}}]);
+//# sourceMappingURL=home-page.acd65f79.chunk.js.map
